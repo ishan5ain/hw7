@@ -1,7 +1,7 @@
 var puck = {
   x: 200,
   y: 200,
-  xSpeed: 1,
+  xSpeed: 3,
   ySpeed: -1,
   r: 10,
   reset: function() {
@@ -27,8 +27,21 @@ var player2 = {
   score: 0
 };
 
+//color variables
 var puckColor = 255;
 var playerColor = 255;
+
+//sounds variables
+var wallHit;
+var playerHit;
+var oops;
+
+
+function preload(){
+  wallHit = loadSound('assets/pong-wall.wav');
+  playerHit = loadSound('assets/pong-player.wav');
+  oops = loadSound('assets/pong-oops.wav');
+}
 
 function setup() {
   createCanvas(400, 400);
@@ -55,6 +68,7 @@ function draw() {
   // move puck
   if (puck.y < puck.r || puck.y > height - puck.r) {
     puck.ySpeed = -puck.ySpeed;
+    wallHit.play();
   }
 
   puck.x += puck.xSpeed;
@@ -91,9 +105,11 @@ function draw() {
     // check if puck is within paddle height...
     if (puck.y > player1.y && puck.y < player1.y + player1.ht) {
       puck.xSpeed = abs(puck.xSpeed);
+      playerHit.play();
     } else {
       // reset the puck, updates the score and change the xSpeed according to the winner
       if (puck.x < 0) {
+        oops.play();
         puck.xSpeed = abs(puck.xSpeed);
         puck.reset();
         player2.score++;
@@ -106,9 +122,11 @@ function draw() {
     // check if puck is within paddle height...
     if (puck.y > player2.y && puck.y < player2.y + player2.ht) {
       puck.xSpeed = -abs(puck.xSpeed);
+      playerHit.play();
     } else {
       // reset the puck, updates the score and change the xSpeed according to the winner
       if (puck.x > width) {
+        oops.play();
         puck.xSpeed = -abs(puck.xSpeed);
         puck.reset();
         player1.score++;
